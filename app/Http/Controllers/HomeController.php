@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+
+class HomeController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function index()
+    {
+	$license=DB::table('license')->value('pc');	
+	$pcs=DB::table('computer')->limit($license)->orderBy('id', 'desc')->get();
+	$collection=new Collection($pcs);
+	$pcs=$collection->reverse();
+	return view('home', ['pcs' => $pcs]);
+    }
+}
